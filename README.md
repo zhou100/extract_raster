@@ -1,2 +1,2 @@
 # extract_raster
-Extract satellite imagery data (land area, elevation, irrigation, rainfall etc)
+Code for extract satellite imagery data (land area, elevation, irrigation, rainfall etc) for a given shapefile of interest
