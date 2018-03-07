@@ -28,7 +28,7 @@ mean_temp.master<-c()
 yrs=1960:2013
 month=1:12
 for (yr in yrs) {
-  for (mo in month) {
+ 
     #read in Udel file to get lat-lon of Udel grids. first two columns are lon and lat.
     #Column 3-14 are repectively Jan to Dec weather.
     temp=read.table(paste('C:/Users/Administrator/Desktop/air_temp_2014/air_temp.',yr,sep=""),header=F)
@@ -43,9 +43,10 @@ for (yr in yrs) {
     pts.poly <- point.in.poly(temp_proj, cropland_proj)
     
     #loop over the month
+    for (mo in month) {
     month_ex = paste("V",mo+2,sep = "")
     mean_temp<-tapply(pts.poly@data[,month_ex], pts.poly@data$ISO3V10, FUN=function(x){mean(x,na.rm=TRUE)})
-    
+    mean_temp<-as.data.frame(mean_temp)
     # document the years and month for joining data later
     mean_temp$year = yr
     mean_temp$month = mo
