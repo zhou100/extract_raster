@@ -46,7 +46,7 @@ for (yr in yrs) {
     for (mo in month) {
     month_ex = paste("V",mo+2,sep = "")
     mean_temp<-tapply(pts.poly@data[,month_ex], pts.poly@data$ISO3V10, FUN=function(x){mean(x,na.rm=TRUE)})
-    mean_temp<-as.data.frame(mean_temp)
+    #mean_temp<-as.data.frame(mean_temp)
     # document the years and month for joining data later
     mean_temp$year = yr
     mean_temp$month = mo
@@ -56,5 +56,5 @@ for (yr in yrs) {
 
 }
  
-write(mean_temp.master,"udel_temperature_cropland.csv")
+write.csv(mean_temp.master,"udel_temperature_cropland.csv")
    
