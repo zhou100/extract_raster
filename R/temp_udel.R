@@ -55,6 +55,7 @@ for (yr in yrs) {
   }
 
 }
- 
+
+mean_temp.master<-as.data.frame(mean_temp.master) 
 write.csv(mean_temp.master,"udel_temperature_cropland.csv")
    
