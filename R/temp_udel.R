@@ -17,7 +17,7 @@ library(rgeos)
 require(spatialEco)
 require(sp)
 
-cropland=readOGR("shapefiles/cropland_sage/cropland_country.shp")
+cropland=readOGR("shapefiles/noncropland/non_cropland.shp")
 
 newproj<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 
