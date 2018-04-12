@@ -17,21 +17,24 @@ library(rgeos)
 require(spatialEco)
 require(sp)
 
-cropland=readOGR("shapefiles/noncropland/non_cropland.shp")
+tz_lhz=readOGR("D:/udeltemp/shapefiles/TZ_LHZ_2009/TZ_LHZ_2009.shp")
 
-newproj<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+#newproj<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+
+proj.latlon <- CRS("+proj=aea +lat_1=20 +lat_2=-23 +lat_0=0 +lon_0=25 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs")
+unionbuffer <- spTransform(ug_lhz, CRS = proj.latlon)
 
 cropland_proj <- spTransform(cropland,CRS=CRS(newproj))
 
 
 mean_temp.master<-c()
-yrs=1960:2013
+yrs=2006:2014
 month=1:12
 for (yr in yrs) {
  
     #read in Udel file to get lat-lon of Udel grids. first two columns are lon and lat.
     #Column 3-14 are repectively Jan to Dec weather.
-    temp=read.table(paste('C:/Users/Administrator/Desktop/air_temp_2014/air_temp.',yr,sep=""),header=F)
+    temp=read.table(paste('D:/udeltemp/air_temp_2014/air_temp.',yr,sep=""),header=F)
     # first two columns are lon and lat. read them as coordinates so that 
     coordinates(temp) <- ~ V1 + V2
     
