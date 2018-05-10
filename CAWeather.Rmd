@@ -7,11 +7,11 @@ output: word_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(fig.width=30, fig.height=15) 
+knitr::opts_chunk$set(fig.width=40, fig.height=40) 
 
 ```
 
-```{r,echo=FALSE}
+```{r,include=FALSE}
 library(ggplot2) #Calls: fortify, ggplot
 library(rgdal)   
 library(sp)      
@@ -23,20 +23,37 @@ library(R.utils)
 library(rgeos)
 library(dplyr)
 ```
-## 
 
-Daily temperature (min and max) for each ward (1970/01/01- 2018/04/28)
 
-```{r,echo=FALSE}
+```{r,include=FALSE}
 zmw_ward=readOGR("shapefiles/zmw/zwe_polbnda_adm3_250k_cso.shp")
 ```
 ```{r}
 plot(zmw_ward)
 ```
-## daily temperatures for each ward for the growing season (October to June) starting in October 2007 and ending in June 2011.
- 
-1. get ECMWF data (will need some python code to do the automatica download)
-2. try with african drought monitor 
+
+
+## Daily temperature (min and max) for each ward (1970/01/01- 2018/04/28) 
+
+Dataset extracted from African Drought Monitor (using extract_afm.R), see temp_min.csv and temp_max.csv 
+
+
+## Daily rainfall for each ward (1981/01/01- 2018/04/28) 
+
+Dataset extracted from CHIRPS (using daily_rain_zmw.R), see daily_rain.csv   
+
+
+## Daily temperatures for each ward for the growing season (October to June) starting in October 2007 and ending in June 2011.
+
+see growseason_temp_min.csv and growseason_temp_max.csv 
+
+
+```{r,include=FALSE} 
+# 1. get ECMWF data (will need some python code to do the automatica download)
+
+# 2. try with african drought monitor 
+
+```
 
 
 
@@ -56,13 +73,12 @@ library(readxl)
 
 ```
 
-create a “heat” map for cumulative season rainfall for all of Zimbabwe. 
-He should be able to find a polygon layer for wards in Zimbabwe online. 
-
-lay over the outlines of the surveyed wards on the “heat” map.
+create a “heat” map for cumulative season rainfall, lay over the outlines of the surveyed wards on the “heat” map.
 
 
-## 4 Temperature Maps (Gdd)
+## 4 Temperature Maps (Gdd and mean temperature)
+
+create a “heat” map for cumulative season rainfall, lay over the outlines of the surveyed wards on the “heat” map.
 
 
 

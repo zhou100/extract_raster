@@ -20,32 +20,34 @@ library(R.utils)
 library(rgeos)
 require(parallel) 
 
-library(adehabitat)
-
+ 
 #Read Indbia map (shapefile)
 # "../../map" is a relative path from your working directory - it means up two directories, then inside the map directory
-mw_lhz=readOGR("D:/udeltemp/shapefiles/livelihood zone 2012/MW_Admin1_LHZ_2012.3/MW_Admin1_LHZ_2012.3.shp")
+#zmw_ward=readOGR("D:/udeltemp/shapefiles/livelihood zone 2012/MW_Admin1_LHZ_2012.3/MW_Admin1_LHZ_2012.3.shp")
+
+zmw_ward=readOGR("shapefiles/zmw/zwe_polbnda_adm3_250k_cso.shp")
+crs(zmw_ward) = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 
 proj.latlon <- CRS("+proj=aea +lat_1=20 +lat_2=-23 +lat_0=0 +lon_0=25 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs")
-mw_lhz_proj <- spTransform(mw_lhz, CRS = proj.latlon)
+
+zmw_ward_proj <- spTransform(zmw_ward, CRS = proj.latlon)
  
 
 ## Stack raster layers in a list/tmax
 
-#setwd("/Users/yujunzhou/Google Drive/dataImprove/zhou100/AfricanDrought /tmax")
-rlist <- list.files(path="D:/afm/tmin--GFS_ANALYSIS_BC", 
+#setwd("/Users/yujunzhou/Google Drive/dat aImprove/zhou100/AfricanDrought /tmax")
+rlist <- list.files(path="D:/tmax--PGF", 
                     pattern = "asc$",
                     full.names=TRUE)
 
 r <- stack(rlist)
- 
- 
+
 detach("package:R.utils", unload=TRUE)
 
 #nlayers(r)
 
 
-starttimeInd <- proc.time() #begin processing timer
+starttime <- proc.time() #begin processing timer
 
 mat.data <- c()
 for(i in 1:nlayers(r)) {
@@ -53,20 +55,25 @@ for(i in 1:nlayers(r)) {
 #ex <- extract(r[[i]], Ind)
   crs(r[[i]]) = "+proj=longlat +ellps=WGS84"
   raster_proj <- projectRaster(r[[i]], crs = proj.latlon)
-  clip1_ind <- crop(r[[i]], extent(mw_lhz)) #crop to extent of polygon
-  clip2_ind <- rasterize(mw_lhz, clip1_ind, mask=TRUE)
-  ex <- extract(clip2_ind, mw_lhz)
+  clip1_zmw <- crop(r[[i]], extent(zmw_ward)) #crop to extent of polygon
+  clip2_zmw <- rasterize(zmw_ward, clip1_zmw, mask=TRUE)
+  ex <- extract(clip2_zmw, zmw_ward)
   #ext <- getValues(clip2_ind)
   #mat <- t(mclapply(ex, FUN = mean,mc.cores = 4))
   mat <- sapply(ex, function(x){mean(x,na.rm = TRUE)})
   mat.data <-rbind(mat.data, mat)
   }
 
-colnames(mat.data) <- as.character(format(mw_lhz$FNID, scientific=FALSE))
+colnames(mat.data) <- as.character(format(zmw_ward$WARDPCODE, scientific=FALSE))
 
-name_list<-gsub(pattern = "D:/afm/tmin--GFS_ANALYSIS_BC/",x=rlist,replacement = "")
-name_list<- gsub(pattern = "_GFS_ANALYSIS_BC_",x=name_list,replacement = "")
-name_list<- gsub(pattern = "tmin",x=name_list,replacement = "")
+#name_list<-gsub(pattern = "D:/zmw_temp/tmin--GFS_ANALYSIS_BC/",x=rlist,replacement = "")
+name_list<-gsub(pattern = "D:/zmw_temp/tmax--PGF/",x=rlist,replacement = "")
+
+#name_list<- gsub(pattern = "_GFS_ANALYSIS_BC_",x=name_list,replacement = "")
+
+name_list<- gsub(pattern = "_PGF_",x=name_list,replacement = "")
+
+name_list<- gsub(pattern = "tmax",x=name_list,replacement = "")
 name_list<- gsub(pattern = "_daily.asc",x=name_list,replacement = "")
 
 
@@ -79,7 +86,7 @@ mat.data.final<-cbind(mat.data,date1)
 end_time <- proc.time() #end timer
 end_time - starttimeInd
  
-write.csv(mat.data.final,"mw_daily_tmin.csv")
+write.csv(mat.data.final,"zmw_daily_tmax70_08.csv")
 
 
 
