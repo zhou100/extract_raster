@@ -36,7 +36,7 @@ zmw_ward_proj <- spTransform(zmw_ward, CRS = proj.latlon)
 ## Stack raster layers in a list/tmax
 
 #setwd("/Users/yujunzhou/Google Drive/dat aImprove/zhou100/AfricanDrought /tmax")
-rlist <- list.files(path="D:/tmax--PGF", 
+rlist <- list.files(path="D:/zmw_temp/tmin_GFS_ANALYSIS_BC", 
                     pattern = "asc$",
                     full.names=TRUE)
 
@@ -66,6 +66,10 @@ for(i in 1:nlayers(r)) {
 
 colnames(mat.data) <- as.character(format(zmw_ward$WARDPCODE, scientific=FALSE))
 
+# 
+# rlist <- list.files(path="D:/zmw_temp/tmin_GFS_ANALYSIS_BC", 
+#                     pattern = "asc$",
+#                     full.names=TRUE)
 #name_list<-gsub(pattern = "D:/zmw_temp/tmin--GFS_ANALYSIS_BC/",x=rlist,replacement = "")
 name_list<-gsub(pattern = "D:/zmw_temp/tmax--PGF/",x=rlist,replacement = "")
 

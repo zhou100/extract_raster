@@ -28,6 +28,7 @@ library(dplyr)
 ```{r,include=FALSE}
 zmw_ward=readOGR("shapefiles/zmw/zwe_polbnda_adm3_250k_cso.shp")
 ```
+
 ```{r}
 plot(zmw_ward)
 ```
@@ -37,6 +38,88 @@ plot(zmw_ward)
 
 Dataset extracted from African Drought Monitor (using extract_afm.R), see temp_min.csv and temp_max.csv 
 
+```{r,include=FALSE}
+tmax0918 = read.csv("D:/zmw_daily_tmax09_18.csv")
+rlist <- list.files(path="D:/zmw_temp/tmax--GFS_ANALYSIS_BC", 
+                    pattern = "asc$",
+                    full.names=TRUE)
+#name_list<-gsub(pattern = "D:/zmw_temp/tmin--GFS_ANALYSIS_BC/",x=rlist,replacement = "")
+name_list<-gsub(pattern = "D:/zmw_temp/tmax--GFS_ANALYSIS_BC/",x=rlist,replacement = "")
+
+#name_list<- gsub(pattern = "_GFS_ANALYSIS_BC_",x=name_list,replacement = "")
+
+name_list<- gsub(pattern = "_GFS_ANALYSIS_BC_",x=name_list,replacement = "")
+
+name_list<- gsub(pattern = "tmax",x=name_list,replacement = "")
+name_list<- gsub(pattern = "_daily.asc",x=name_list,replacement = "")
+
+date1 = as.Date(name_list,"%Y%m%d")
+date1 = format(date1, "%m/%d/%Y")
+tmax0918$date1 = date1
+```
+
+```{r,include=FALSE}
+tmin0918 = read.csv("D:/zmw_daily_tmin09_18.csv")
+rlist <- list.files(path="D:/zmw_temp/tmin_GFS_ANALYSIS_BC", 
+                    pattern = "asc$",
+                    full.names=TRUE)
+#name_list<-gsub(pattern = "D:/zmw_temp/tmin--GFS_ANALYSIS_BC/",x=rlist,replacement = "")
+name_list<-gsub(pattern = "D:/zmw_temp/tmin_GFS_ANALYSIS_BC/",x=rlist,replacement = "")
+
+#name_list<- gsub(pattern = "_GFS_ANALYSIS_BC_",x=name_list,replacement = "")
+
+name_list<- gsub(pattern = "_GFS_ANALYSIS_BC_",x=name_list,replacement = "")
+
+name_list<- gsub(pattern = "tmin",x=name_list,replacement = "")
+name_list<- gsub(pattern = "_daily.asc",x=name_list,replacement = "")
+
+date1 = as.Date(name_list,"%Y%m%d")
+date1 = format(date1, "%m/%d/%Y")
+tmin0918$date1 = date1
+```
+
+
+```{r,include=FALSE}
+tmax7008 = read.csv("D:/zmw_daily_tmax70_08.csv")
+rlist <- list.files(path="D:/zmw_temp/tmax--PGF", 
+                    pattern = "asc$",
+                    full.names=TRUE)
+#name_list<-gsub(pattern = "D:/zmw_temp/tmin--GFS_ANALYSIS_BC/",x=rlist,replacement = "")
+name_list<-gsub(pattern = "D:/zmw_temp/tmax--PGF/",x=rlist,replacement = "")
+
+#name_list<- gsub(pattern = "_GFS_ANALYSIS_BC_",x=name_list,replacement = "")
+
+name_list<- gsub(pattern = "_PGF_",x=name_list,replacement = "")
+
+name_list<- gsub(pattern = "tmax",x=name_list,replacement = "")
+name_list<- gsub(pattern = "_daily.asc",x=name_list,replacement = "")
+
+date1 = as.Date(name_list,"%Y%m%d")
+date1 = format(date1, "%m/%d/%Y")
+tmax7008$date1 = date1
+```
+
+```{r,include=FALSE}
+
+tmin7008 = read.csv("D:/zmw_daily_tmin70_08.csv")
+rlist <- list.files(path="D:/zmw_temp/tmin--PGF", 
+                    pattern = "asc$",
+                    full.names=TRUE)
+#name_list<-gsub(pattern = "D:/zmw_temp/tmin--GFS_ANALYSIS_BC/",x=rlist,replacement = "")
+name_list<-gsub(pattern = "D:/zmw_temp/tmin--PGF/",x=rlist,replacement = "")
+
+#name_list<- gsub(pattern = "_GFS_ANALYSIS_BC_",x=name_list,replacement = "")
+
+name_list<- gsub(pattern = "_PGF_",x=name_list,replacement = "")
+
+name_list<- gsub(pattern = "tmin",x=name_list,replacement = "")
+name_list<- gsub(pattern = "_daily.asc",x=name_list,replacement = "")
+
+date1 = as.Date(name_list,"%Y%m%d")
+date1 = format(date1, "%m/%d/%Y")
+tmin7008$date1 = date1
+
+```
 
 ## Daily rainfall for each ward (1981/01/01- 2018/04/28) 
 
