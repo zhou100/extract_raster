@@ -27,7 +27,6 @@ library(dplyr)
 
 ```{r,include=FALSE}
 zmw_ward=readOGR("shapefiles/zmw/zwe_polbnda_adm3_250k_cso.shp")
-zmw_ward@data$WARDPCODE
 ```
 
 ```{r}
@@ -210,22 +209,22 @@ growseason_rain = dplyr::bind_rows(rain0708,rain0809,rain0910,rain1011)
 
 write.csv(growseason_rain,"D:/growseason_rain.csv")
 
-rain0708sum = rain0708 %>% select(-date1) %>% select(-X) %>% colSums (na.rm = TRUE)
-rain0809sum = rain0809 %>% select(-date1) %>% select(-X) %>% colSums (na.rm = TRUE)
-rain0910sum = rain0910 %>% select(-date1) %>% select(-X) %>% colSums (na.rm = TRUE)
-rain1011sum = rain1011 %>% select(-date1) %>% select(-X) %>% colSums (na.rm = TRUE)
+
+rain0708sum = rain0708 %>% select(-Date) %>% colSums (na.rm = TRUE)
+rain0809sum = rain0809 %>% select(-Date) %>% colSums (na.rm = TRUE)
+rain0910sum = rain0910 %>% select(-Date) %>% colSums (na.rm = TRUE)
+rain1011sum = rain1011 %>% select(-Date) %>% colSums (na.rm = TRUE)
 
 
-tmax0708sum = tmax0708 %>% select(-date1) %>% select(-X) %>% colMeans (na.rm = TRUE)
-tmax0809sum = tmax0809 %>% select(-date1) %>% select(-X) %>% colMeans (na.rm = TRUE)
-tmax0910sum = tmax0910 %>% select(-date1) %>% select(-X) %>% colMeans (na.rm = TRUE)
-tmax1011sum = tmax1011 %>% select(-date1) %>% select(-X) %>% colMeans (na.rm = TRUE)
+tmax0708sum = tmax0708 %>% select(-Date) %>% colMeans (na.rm = TRUE)
+tmax0809sum = tmax0809 %>% select(-Date) %>% colMeans (na.rm = TRUE)
+tmax0910sum = tmax0910 %>% select(-Date) %>% colMeans (na.rm = TRUE)
+tmax1011sum = tmax1011 %>% select(-Date) %>% colMeans (na.rm = TRUE)
 
-tmin0708sum = tmin0708 %>% select(-date1) %>% select(-X) %>% colMeans (na.rm = TRUE)
-tmin0809sum = tmin0809 %>% select(-date1) %>% select(-X) %>% colMeans (na.rm = TRUE)
-tmin0910sum = tmin0910 %>% select(-date1) %>% select(-X) %>% colMeans (na.rm = TRUE)
-tmin1011sum = tmin1011 %>% select(-date1) %>% select(-X) %>% colMeans (na.rm = TRUE)
-
+tmin0708sum = tmin0708 %>% select(-Date) %>% colMeans (na.rm = TRUE)
+tmin0809sum = tmin0809 %>% select(-Date) %>% colMeans (na.rm = TRUE)
+tmin0910sum = tmin0910 %>% select(-Date) %>% colMeans (na.rm = TRUE)
+tmin1011sum = tmin1011 %>% select(-Date) %>% colMeans (na.rm = TRUE)
 
 weather_list = list(tmax0708sum,tmax0809sum,tmax0910sum,tmax1011sum,tmin0708sum,tmin0809sum,tmin0910sum,tmin1011sum,rain0708sum,rain0809sum,rain0910sum,rain1011sum)
 
@@ -239,13 +238,69 @@ colnames(weather_list[[5]]) = c("WARDPCODE","tmin0708")
 colnames(weather_list[[6]]) = c("WARDPCODE","tmin0809")
 colnames(weather_list[[7]]) = c("WARDPCODE","tmin0910")
 colnames(weather_list[[8]]) = c("WARDPCODE","tmin1011")
-colnames(weather_list[[9]]) = c("WARDPCODE","tmax0708")
-colnames(weather_list[[10]]) = c("WARDPCODE","tmax0809")
-colnames(weather_list[[11]]) = c("WARDPCODE","tmax0910")
-colnames(weather_list[[12]]) = c("WARDPCODE","tmax1011")
+colnames(weather_list[[9]]) = c("WARDPCODE","rain0708")
+colnames(weather_list[[10]]) = c("WARDPCODE","rain0809")
+colnames(weather_list[[11]]) = c("WARDPCODE","rain0910")
+colnames(weather_list[[12]]) = c("WARDPCODE","rain1011")
+
+map_data= dplyr::bind_cols(weather_list[[1]],weather_list[[2]][2])
+
+for (i in 3:12){
+  map_data = dplyr::bind_cols(map_data,weather_list[[i]][2])
+  
+}
+map_data
+
+map_data$tmax0708 = map_data$tmax0708-273.15
+map_data$tmax0809 = map_data$tmax0809-273.15
+map_data$tmax0910 = map_data$tmax0910-273.15
+map_data$tmax1011 = map_data$tmax1011-273.15
+map_data$tmin0708 = map_data$tmin0708-273.15
+map_data$tmin0809 = map_data$tmin0809-273.15
+map_data$tmin0910 = map_data$tmin0910-273.15
+map_data$tmin1011 = map_data$tmin1011-273.15
 
 
-weather_list2 = lapply(weather_list, function(x){gsub(pattern="X",replacement = "",colnames(x))})
+
+map_data$tmean0708 <- rowMeans(map_data[c('tmax0708', 'tmin0708')], na.rm=TRUE)
+map_data$tmean0809 = rowMeans(map_data[c('tmax0809', 'tmin0809')], na.rm=TRUE)
+map_data$tmean0910 = rowMeans(map_data[c('tmax0910', 'tmin0910')], na.rm=TRUE)
+map_data$tmean1011 = rowMeans(map_data[c('tmax1011', 'tmin1011')], na.rm=TRUE)
+
+growseaon_mean0708 = (tmax0708 %>% select(-Date)+tmin0708 %>% select(-Date))/2 - 273.15
+growseaon_mean0708$Date = tmax0708$Date
+growseaon_mean0809 = (tmax0809 %>% select(-Date)+tmin0809 %>% select(-Date))/2 - 273.15
+growseaon_mean0809$Date = tmax0809$Date
+growseaon_mean0910 = (tmax0910 %>% select(-Date)+tmin0910 %>% select(-Date))/2 - 273.15
+growseaon_mean0910$Date = tmax0910$Date
+growseaon_mean1011 = (tmax1011 %>% select(-Date)+tmin1011 %>% select(-Date))/2 - 273.15
+growseaon_mean1011$Date = tmax1011$Date
+
+
+
+gdd_0708 = growseaon_mean0708 %>% 
+          dplyr::mutate_all(funs(ifelse(.>8 & .<32,1,0))) %>%
+          dplyr::summarise_all(funs(length(Date[.==1])))    
+gdd_0809 = growseaon_mean0809 %>% 
+  dplyr::mutate_all(funs(ifelse(.>8 & .<32,1,0))) %>%
+  dplyr::summarise_all(funs(length(Date[.==1])))    
+gdd_0910 = growseaon_mean0910 %>% 
+  dplyr::mutate_all(funs(ifelse(.>8 & .<32,1,0))) %>%
+  dplyr::summarise_all(funs(length(Date[.==1])))    
+gdd_1011 = growseaon_mean1011 %>% 
+  dplyr::mutate_all(funs(ifelse(.>8 & .<32,1,0))) %>%
+  dplyr::summarise_all(funs(length(Date[.==1])))    
+
+gdd= dplyr::bind_rows(gdd_0708,gdd_0809,gdd_0910,gdd_1011)
+tgdd = t(gdd)
+colnames(tgdd) =c("gdd_0708","gdd_0809","gdd_0910","gdd_1011")
+tgdd = as.data.frame(tgdd) %>% tibble::rownames_to_column(var="WARDPCODE")
+tgdd$WARDPCODE = gsub(pattern = "X",replacement = "",tgdd$WARDPCODE)
+tgdd = tgdd %>% filter(WARDPCODE != "Date")
+
+map_data = dplyr::bind_cols(map_data,tgdd)
+
+write.csv(map_data,"D:/map_data.csv")
 ```
 
 create a “heat” map for cumulative season rainfall, lay over the outlines of the surveyed wards on the “heat” map.
