@@ -312,4 +312,22 @@ create a “heat” map for cumulative season rainfall, lay over the outlines of
 
 
 
+
+### check monthly rainfall data 
+
+```{r,include=FALSE}
+rain_check = read.csv("D:/month_rain_check2.csv")
+#rain_check
+Date = as.Date(rain_check$Date,"%m/%d/%Y")
+#Date
+library(zoo)
+Month = as.yearmon(Date)
+rain_check$year_mon = Month
+check = rain_check %>% select(-Date)%>% group_by(year_mon) %>% dplyr::summarise_all(funs(sum))
+check
+write.csv(check,"D:/aggregated_rain_check2.csv")
+#Month
+
+```
+
  
