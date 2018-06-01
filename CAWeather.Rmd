@@ -155,7 +155,7 @@ Dataset extracted from CHIRPS (using daily_rain_zmw.R), see daily_rain.csv
 
 ```
 
-## Daily temperatures for each ward for the growing season (October to June) starting in October 2007 and ending in June 2011.
+## Daily temperatures for each ward for the growing season (October to April) starting in October 2007 and ending in April 2011.
 
 see growseason_temp_min.csv and growseason_temp_max.csv 
 
@@ -192,10 +192,10 @@ growseason_temp_max = dplyr::bind_rows(tmax0708,tmax0809,tmax0910,tmax1011)
 
 ## 4 Rainfall Maps (CHIRPS daily rainfall data for the entire country, calculate cumulative seasonal rainfall )
 
-a.       October 2007 – June 2008
-b.       October 2008 – June 2009
-c.       October 2009 – June 2010
-d.       October 2010 – June 2011
+a.       October 2007 – April 2008
+b.       October 2008 – April 2009
+c.       October 2009 – April 2010
+d.       October 2010 – April 2011
 
 
 calculate total seasonal rainfall for each crop year
@@ -269,9 +269,10 @@ sd_rain = totalrain_combine %>% colSd (na.rm = TRUE)
 z_score =   (totalrain_combine -mean_rain)/sd_rain
 
 rain_year = read.csv("D:/rain_year.csv")
-z_score$rain_year = rain_year
-totalrain_combine$rain_year = rain_year
-
+rain_year
+z_score$rain_year = rain_year[,1]
+totalrain_combine$rain_year = rain_year[,1]
+z_score$rain_year
 
 ```
 
@@ -396,29 +397,55 @@ tminlist= list(tmin8182,tmin8283,tmin8384,tmin8485,tmin8586,tmin8687,tmin8788,tm
 tmaxlist= list(tmax8182,tmax8283,tmax8384,tmax8485,tmax8586,tmax8687,tmax8788,tmax8889,tmax8990,tmax9091,tmax9192,tmax9293,tmax9394,
                tmax9495,tmax9596,tmax9697,tmax9798,tmax9899,tmax9900,tmax0001,tmax0102,tmax0203,tmax0304,tmax0405,tmax0506,tmax0607,tmax0708,tmax0809,
                tmax0910,tmax1011)
-
-
 tminlist_mean = lapply(tminlist,function(x){x %>% select(-Date) })
 tmaxlist_mean = lapply(tmaxlist,function(x){x %>% select(-Date) })
 
+tmeanlist = tminlist_mean
 
-(tminlist_mean[[1]] + tmaxlist_mean[[1]])/2
+for (i in 1:length(tminlist_mean)){
+tmeanlist[[i]] = (tminlist_mean[[i]] + tmaxlist_mean[[i]])/2- 273.15
 
-gdd_0708 = growseaon_mean0708 %>% 
-          dplyr::mutate_all(funs(ifelse(.>8 & .<32,1,0))) %>%
-          dplyr::summarise_all(funs(length(Date[.==1])))    
+}
+
+date_list = lapply(tminlist,function(x){x %>% select(Date) })
+
+
+for (i in 1:length(tmeanlist)){
+tmeanlist[[i]] = cbind(date_list[[i]],tmeanlist[[i]])
+}
+
+tmeanlist[[1]]
+
+gdd_list = lapply(tmeanlist,function(x){x %>% dplyr::mutate_all(funs(ifelse(.>8 & .<32,1,0))) %>% dplyr::summarise_all(funs(length(Date[.==1])))})
+
+gdd_combine= gdd_list[[1]]
+
+for (i in 2:length(gdd_list)){
+  gdd_combine = bind_rows(gdd_combine,gdd_list[[i]]) 
+}
+
+gdd_combine$Date = 0
+gdd_mean = gdd_combine %>% colMeans (na.rm = TRUE)
+
+colSd <- function (x, na.rm=FALSE) apply(X=x, MARGIN=2, FUN=sd, na.rm=na.rm)
+gdd_sd = gdd_combine %>% colSd (na.rm = TRUE)
+gdd_z_score =   (gdd_combine -gdd_mean)/gdd_sd
+
+gdd_combine$Date = temp_year
+gdd_z_score$Date = temp_year
+```
+
+```{r,include=FALSE}
+write.csv(gdd_combine,"D:/gdd_year.csv")
+write.csv(gdd_z_score,"D:/gdd_z_score.csv")
+
+write.csv(mean_temp_combine,"D:/mean_temp.csv")
+write.csv(z_score_temp,"D:/temp_z_score.csv")
 
 
 
-
-gdd= dplyr::bind_rows(gdd_0708,gdd_0809,gdd_0910,gdd_1011)
-tgdd = t(gdd)
-colnames(tgdd) =c("gdd_0708","gdd_0809","gdd_0910","gdd_1011")
-tgdd = as.data.frame(tgdd) %>% tibble::rownames_to_column(var="WARDPCODE")
-tgdd$WARDPCODE = gsub(pattern = "X",replacement = "",tgdd$WARDPCODE)
-tgdd = tgdd %>% filter(WARDPCODE != "Date")
-
-map_data = dplyr::bind_cols(map_data,tgdd)
+write.csv(totalrain_combine,"D:/total_rain.csv")
+write.csv(z_score,"D:/rain_z_score.csv")
 
 ```
 
