@@ -167,17 +167,17 @@ tmax_zmw = read.csv("D:/temp_max.csv")
 tmin_zmw = read.csv("D:/temp_min.csv")
 
 tmin_zmw$Date= as.Date(tmin_zmw$Date,"%m/%d/%Y")
-tmin0708 = tmin_zmw %>% dplyr::filter(Date>="2007-10-01" & Date<"2008-07-01")
-tmin0809 = tmin_zmw %>% dplyr::filter(Date>="2008-10-01" & Date<"2009-07-01")
-tmin0910 = tmin_zmw %>% dplyr::filter(Date>="2009-10-01" & Date<"2010-07-01")
-tmin1011 = tmin_zmw %>% dplyr::filter(Date>="2010-10-01" & Date<"2011-07-01")
+tmin0708 = tmin_zmw %>% dplyr::filter(Date>="2007-10-01" & Date<"2008-05-01")
+tmin0809 = tmin_zmw %>% dplyr::filter(Date>="2008-10-01" & Date<"2009-05-01")
+tmin0910 = tmin_zmw %>% dplyr::filter(Date>="2009-10-01" & Date<"2010-05-01")
+tmin1011 = tmin_zmw %>% dplyr::filter(Date>="2010-10-01" & Date<"2011-05-01")
 
 
 tmax_zmw$Date= as.Date(tmax_zmw$Date,"%m/%d/%Y")
-tmax0708 = tmax_zmw %>% dplyr::filter(Date>="2007-10-01" & Date<"2008-07-01")
-tmax0809 = tmax_zmw %>% dplyr::filter(Date>="2008-10-01" & Date<"2009-07-01")
-tmax0910 = tmax_zmw %>% dplyr::filter(Date>="2009-10-01" & Date<"2010-07-01")
-tmax1011 = tmax_zmw %>% dplyr::filter(Date>="2010-10-01" & Date<"2011-07-01")
+tmax0708 = tmax_zmw %>% dplyr::filter(Date>="2007-10-01" & Date<"2008-05-01")
+tmax0809 = tmax_zmw %>% dplyr::filter(Date>="2008-10-01" & Date<"2009-05-01")
+tmax0910 = tmax_zmw %>% dplyr::filter(Date>="2009-10-01" & Date<"2010-05-01")
+tmax1011 = tmax_zmw %>% dplyr::filter(Date>="2010-10-01" & Date<"2011-05-01")
 
 growseason_temp_min = dplyr::bind_rows(tmin0708,tmin0809,tmin0910,tmin1011)
 growseason_temp_max = dplyr::bind_rows(tmax0708,tmax0809,tmax0910,tmax1011)
@@ -197,19 +197,232 @@ b.       October 2008 – June 2009
 c.       October 2009 – June 2010
 d.       October 2010 – June 2011
 
+
+calculate total seasonal rainfall for each crop year
+calculate mean seasonal rainfall for each crop year
+calculate sd of rainfall for each crop year
+Calculated z-score for each crop_year for each ward as absolute value of (total season rainfall – mean rainfall)/standard deviation
+
 ```{r,include=FALSE}
+rain8107 = read.csv("D:/zmw_season_rain8107.csv")
+rain8107$Date = as.Date(rain8107$Date,"%m/%d/%Y")
+rain8107 = rain8107 %>% select(-yearmon)
+
+
+rain8182 = rain8107 %>% dplyr::filter(Date>="1981-10-01" & Date<"1982-05-01") 
+rain8283 = rain8107 %>% dplyr::filter(Date>="1982-10-01" & Date<"1983-05-01") 
+rain8384 = rain8107 %>% dplyr::filter(Date>="1983-10-01" & Date<"1984-05-01") 
+rain8485 = rain8107 %>% dplyr::filter(Date>="1984-10-01" & Date<"1985-05-01") 
+rain8586 = rain8107 %>% dplyr::filter(Date>="1985-10-01" & Date<"1986-05-01") 
+rain8687 = rain8107 %>% dplyr::filter(Date>="1986-10-01" & Date<"1987-05-01") 
+rain8788 = rain8107 %>% dplyr::filter(Date>="1987-10-01" & Date<"1988-05-01") 
+rain8889 = rain8107 %>% dplyr::filter(Date>="1988-10-01" & Date<"1989-05-01") 
+rain8990 = rain8107 %>% dplyr::filter(Date>="1989-10-01" & Date<"1990-05-01") 
+rain9091 = rain8107 %>% dplyr::filter(Date>="1990-10-01" & Date<"1991-05-01") 
+
+rain9192 = rain8107 %>% dplyr::filter(Date>="1991-10-01" & Date<"1992-05-01") 
+rain9293 = rain8107 %>% dplyr::filter(Date>="1992-10-01" & Date<"1993-05-01") 
+rain9394 = rain8107 %>% dplyr::filter(Date>="1993-10-01" & Date<"1994-05-01") 
+rain9495 = rain8107 %>% dplyr::filter(Date>="1994-10-01" & Date<"1995-05-01") 
+rain9596 = rain8107 %>% dplyr::filter(Date>="1995-10-01" & Date<"1996-05-01") 
+rain9697 = rain8107 %>% dplyr::filter(Date>="1996-10-01" & Date<"1997-05-01") 
+rain9798 = rain8107 %>% dplyr::filter(Date>="1997-10-01" & Date<"1998-05-01") 
+rain9899 = rain8107 %>% dplyr::filter(Date>="1998-10-01" & Date<"1999-05-01") 
+rain9900 = rain8107 %>% dplyr::filter(Date>="1999-10-01" & Date<"2000-05-01") 
+  
+rain0001 = rain8107 %>% dplyr::filter(Date>="2000-10-01" & Date<"2001-05-01") 
+rain0102 = rain8107 %>% dplyr::filter(Date>="2001-10-01" & Date<"2002-05-01") 
+rain0203 = rain8107 %>% dplyr::filter(Date>="2002-10-01" & Date<"2003-05-01") 
+rain0304 = rain8107 %>% dplyr::filter(Date>="2003-10-01" & Date<"2004-05-01") 
+rain0405 = rain8107 %>% dplyr::filter(Date>="2004-10-01" & Date<"2005-05-01") 
+rain0506 = rain8107 %>% dplyr::filter(Date>="2005-10-01" & Date<"2006-05-01") 
+rain0607 = rain8107 %>% dplyr::filter(Date>="2006-10-01" & Date<"2007-05-01") 
+ 
 rain0718 = read.csv("D:/daily_rain.csv")
 rain0718$Date= as.Date(rain0718$Date,"%m/%d/%Y")
-rain0708 = rain0718 %>% dplyr::filter(Date>="2007-10-01" & Date<"2008-07-01") 
-rain0809 = rain0718 %>% dplyr::filter(Date>="2008-10-01" & Date<"2009-07-01") 
-rain0910 = rain0718 %>% dplyr::filter(Date>="2009-10-01" & Date<"2010-07-01") 
-rain1011 = rain0718 %>% dplyr::filter(Date>="2010-10-01" & Date<"2011-07-01") 
+rain0708 = rain0718 %>% dplyr::filter(Date>="2007-10-01" & Date<"2008-05-01") 
+rain0809 = rain0718 %>% dplyr::filter(Date>="2008-10-01" & Date<"2009-05-01") 
+rain0910 = rain0718 %>% dplyr::filter(Date>="2009-10-01" & Date<"2010-05-01") 
+rain1011 = rain0718 %>% dplyr::filter(Date>="2010-10-01" & Date<"2011-05-01") 
 
 growseason_rain = dplyr::bind_rows(rain0708,rain0809,rain0910,rain1011)
 
+
 write.csv(growseason_rain,"D:/growseason_rain.csv")
 
+rainlist= list(rain8182,rain8283,rain8384,rain8485,rain8586,rain8687,rain8788,rain8889,rain8990,rain9091,rain9192,rain9293,rain9394,
+rain9495,rain9596,rain9697,rain9798,rain9899,rain9900,rain0001,rain0102,rain0203,rain0304,rain0405,rain0506,rain0607,rain0708,rain0809,
+rain0910,rain1011)
 
+total_rain_list = lapply(rainlist,function(x){x %>% select(-Date) %>% colSums (na.rm = TRUE)})
+
+totalrain_combine= total_rain_list[[1]]
+
+for (i in 2:length(total_rain_list)){
+  totalrain_combine = bind_rows(totalrain_combine,total_rain_list[[i]]) 
+}
+
+mean_rain = totalrain_combine %>% colMeans (na.rm = TRUE)
+
+colSd <- function (x, na.rm=FALSE) apply(X=x, MARGIN=2, FUN=sd, na.rm=na.rm)
+sd_rain = totalrain_combine %>% colSd (na.rm = TRUE)
+z_score =   (totalrain_combine -mean_rain)/sd_rain
+
+rain_year = read.csv("D:/rain_year.csv")
+z_score$rain_year = rain_year
+totalrain_combine$rain_year = rain_year
+
+
+```
+
+```{r,include=FALSE}
+
+tmin8182 = tmin_zmw %>% dplyr::filter(Date>="1981-10-01" & Date<"1982-05-01") 
+tmin8283 = tmin_zmw %>% dplyr::filter(Date>="1982-10-01" & Date<"1983-05-01") 
+tmin8384 = tmin_zmw %>% dplyr::filter(Date>="1983-10-01" & Date<"1984-05-01") 
+tmin8485 = tmin_zmw %>% dplyr::filter(Date>="1984-10-01" & Date<"1985-05-01") 
+tmin8586 = tmin_zmw %>% dplyr::filter(Date>="1985-10-01" & Date<"1986-05-01") 
+tmin8687 = tmin_zmw %>% dplyr::filter(Date>="1986-10-01" & Date<"1987-05-01") 
+tmin8788 = tmin_zmw %>% dplyr::filter(Date>="1987-10-01" & Date<"1988-05-01") 
+tmin8889 = tmin_zmw %>% dplyr::filter(Date>="1988-10-01" & Date<"1989-05-01") 
+tmin8990 = tmin_zmw %>% dplyr::filter(Date>="1989-10-01" & Date<"1990-05-01") 
+tmin9091 = tmin_zmw %>% dplyr::filter(Date>="1990-10-01" & Date<"1991-05-01") 
+
+tmin9192 = tmin_zmw %>% dplyr::filter(Date>="1991-10-01" & Date<"1992-05-01") 
+tmin9293 = tmin_zmw %>% dplyr::filter(Date>="1992-10-01" & Date<"1993-05-01") 
+tmin9394 = tmin_zmw %>% dplyr::filter(Date>="1993-10-01" & Date<"1994-05-01") 
+tmin9495 = tmin_zmw %>% dplyr::filter(Date>="1994-10-01" & Date<"1995-05-01") 
+tmin9596 = tmin_zmw %>% dplyr::filter(Date>="1995-10-01" & Date<"1996-05-01") 
+tmin9697 = tmin_zmw %>% dplyr::filter(Date>="1996-10-01" & Date<"1997-05-01") 
+tmin9798 = tmin_zmw %>% dplyr::filter(Date>="1997-10-01" & Date<"1998-05-01") 
+tmin9899 = tmin_zmw %>% dplyr::filter(Date>="1998-10-01" & Date<"1999-05-01") 
+tmin9900 = tmin_zmw %>% dplyr::filter(Date>="1999-10-01" & Date<"2000-05-01") 
+
+tmin0001 = tmin_zmw %>% dplyr::filter(Date>="2000-10-01" & Date<"2001-05-01") 
+tmin0102 = tmin_zmw %>% dplyr::filter(Date>="2001-10-01" & Date<"2002-05-01") 
+tmin0203 = tmin_zmw %>% dplyr::filter(Date>="2002-10-01" & Date<"2003-05-01") 
+tmin0304 = tmin_zmw %>% dplyr::filter(Date>="2003-10-01" & Date<"2004-05-01") 
+tmin0405 = tmin_zmw %>% dplyr::filter(Date>="2004-10-01" & Date<"2005-05-01") 
+tmin0506 = tmin_zmw %>% dplyr::filter(Date>="2005-10-01" & Date<"2006-05-01") 
+tmin0607 = tmin_zmw %>% dplyr::filter(Date>="2006-10-01" & Date<"2007-05-01") 
+
+tmin0708 = tmin_zmw %>% dplyr::filter(Date>="2007-10-01" & Date<"2008-05-01") 
+tmin0809 = tmin_zmw %>% dplyr::filter(Date>="2008-10-01" & Date<"2009-05-01") 
+tmin0910 = tmin_zmw %>% dplyr::filter(Date>="2009-10-01" & Date<"2010-05-01") 
+tmin1011 = tmin_zmw %>% dplyr::filter(Date>="2010-10-01" & Date<"2011-05-01") 
+
+tmax8182 = tmax_zmw %>% dplyr::filter(Date>="1981-10-01" & Date<"1982-05-01") 
+tmax8283 = tmax_zmw %>% dplyr::filter(Date>="1982-10-01" & Date<"1983-05-01") 
+tmax8384 = tmax_zmw %>% dplyr::filter(Date>="1983-10-01" & Date<"1984-05-01") 
+tmax8485 = tmax_zmw %>% dplyr::filter(Date>="1984-10-01" & Date<"1985-05-01") 
+tmax8586 = tmax_zmw %>% dplyr::filter(Date>="1985-10-01" & Date<"1986-05-01") 
+tmax8687 = tmax_zmw %>% dplyr::filter(Date>="1986-10-01" & Date<"1987-05-01") 
+tmax8788 = tmax_zmw %>% dplyr::filter(Date>="1987-10-01" & Date<"1988-05-01") 
+tmax8889 = tmax_zmw %>% dplyr::filter(Date>="1988-10-01" & Date<"1989-05-01") 
+tmax8990 = tmax_zmw %>% dplyr::filter(Date>="1989-10-01" & Date<"1990-05-01") 
+tmax9091 = tmax_zmw %>% dplyr::filter(Date>="1990-10-01" & Date<"1991-05-01") 
+
+tmax9192 = tmax_zmw %>% dplyr::filter(Date>="1991-10-01" & Date<"1992-05-01") 
+tmax9293 = tmax_zmw %>% dplyr::filter(Date>="1992-10-01" & Date<"1993-05-01") 
+tmax9394 = tmax_zmw %>% dplyr::filter(Date>="1993-10-01" & Date<"1994-05-01") 
+tmax9495 = tmax_zmw %>% dplyr::filter(Date>="1994-10-01" & Date<"1995-05-01") 
+tmax9596 = tmax_zmw %>% dplyr::filter(Date>="1995-10-01" & Date<"1996-05-01") 
+tmax9697 = tmax_zmw %>% dplyr::filter(Date>="1996-10-01" & Date<"1997-05-01") 
+tmax9798 = tmax_zmw %>% dplyr::filter(Date>="1997-10-01" & Date<"1998-05-01") 
+tmax9899 = tmax_zmw %>% dplyr::filter(Date>="1998-10-01" & Date<"1999-05-01") 
+tmax9900 = tmax_zmw %>% dplyr::filter(Date>="1999-10-01" & Date<"2000-05-01") 
+
+tmax0001 = tmax_zmw %>% dplyr::filter(Date>="2000-10-01" & Date<"2001-05-01") 
+tmax0102 = tmax_zmw %>% dplyr::filter(Date>="2001-10-01" & Date<"2002-05-01") 
+tmax0203 = tmax_zmw %>% dplyr::filter(Date>="2002-10-01" & Date<"2003-05-01") 
+tmax0304 = tmax_zmw %>% dplyr::filter(Date>="2003-10-01" & Date<"2004-05-01") 
+tmax0405 = tmax_zmw %>% dplyr::filter(Date>="2004-10-01" & Date<"2005-05-01") 
+tmax0506 = tmax_zmw %>% dplyr::filter(Date>="2005-10-01" & Date<"2006-05-01") 
+tmax0607 = tmax_zmw %>% dplyr::filter(Date>="2006-10-01" & Date<"2007-05-01") 
+
+tmax0708 = tmax_zmw %>% dplyr::filter(Date>="2007-10-01" & Date<"2008-05-01") 
+tmax0809 = tmax_zmw %>% dplyr::filter(Date>="2008-10-01" & Date<"2009-05-01") 
+tmax0910 = tmax_zmw %>% dplyr::filter(Date>="2009-10-01" & Date<"2010-05-01") 
+tmax1011 = tmax_zmw %>% dplyr::filter(Date>="2010-10-01" & Date<"2011-05-01") 
+
+
+tminlist= list(tmin8182,tmin8283,tmin8384,tmin8485,tmin8586,tmin8687,tmin8788,tmin8889,tmin8990,tmin9091,tmin9192,tmin9293,tmin9394,
+               tmin9495,tmin9596,tmin9697,tmin9798,tmin9899,tmin9900,tmin0001,tmin0102,tmin0203,tmin0304,tmin0405,tmin0506,tmin0607,tmin0708,tmin0809,
+               tmin0910,tmin1011)
+
+tmaxlist= list(tmax8182,tmax8283,tmax8384,tmax8485,tmax8586,tmax8687,tmax8788,tmax8889,tmax8990,tmax9091,tmax9192,tmax9293,tmax9394,
+               tmax9495,tmax9596,tmax9697,tmax9798,tmax9899,tmax9900,tmax0001,tmax0102,tmax0203,tmax0304,tmax0405,tmax0506,tmax0607,tmax0708,tmax0809,
+               tmax0910,tmax1011)
+
+total_tmax_list = lapply(tmaxlist,function(x){x %>% select(-Date) %>% colMeans (na.rm = TRUE)})
+total_tmin_list = lapply(tminlist,function(x){x %>% select(-Date) %>% colMeans (na.rm = TRUE)})
+
+
+totaltmax_combine= total_tmax_list[[1]]
+totaltmin_combine= total_tmin_list[[1]]
+
+
+for (i in 2:length(total_tmax_list)){
+  totaltmax_combine = bind_rows(totaltmax_combine,total_tmax_list[[i]]) 
+}
+
+for (i in 2:length(total_tmin_list)){
+  totaltmin_combine = bind_rows(totaltmin_combine,total_tmin_list[[i]]) 
+}
+
+mean_temp_combine = (totaltmin_combine + totaltmin_combine)/2 - 273.15
+
+mean_temp_mean = mean_temp_combine %>% colMeans (na.rm = TRUE)
+
+colSd <- function (x, na.rm=FALSE) apply(X=x, MARGIN=2, FUN=sd, na.rm=na.rm)
+sd_temp = mean_temp_combine %>% colSd (na.rm = TRUE)
+z_score_temp =   (mean_temp_combine -mean_temp_mean)/sd_temp
+
+rain_year = read.csv("D:/rain_year.csv")
+temp_year = gsub(pattern = "rain",replacement ="temp",rain_year[,1])
+
+
+
+z_score_temp$temp_year = temp_year
+mean_temp_combine$temp_year = temp_year
+```
+
+```{r,include=FALSE}
+
+tminlist= list(tmin8182,tmin8283,tmin8384,tmin8485,tmin8586,tmin8687,tmin8788,tmin8889,tmin8990,tmin9091,tmin9192,tmin9293,tmin9394,
+               tmin9495,tmin9596,tmin9697,tmin9798,tmin9899,tmin9900,tmin0001,tmin0102,tmin0203,tmin0304,tmin0405,tmin0506,tmin0607,tmin0708,tmin0809,
+               tmin0910,tmin1011)
+
+tmaxlist= list(tmax8182,tmax8283,tmax8384,tmax8485,tmax8586,tmax8687,tmax8788,tmax8889,tmax8990,tmax9091,tmax9192,tmax9293,tmax9394,
+               tmax9495,tmax9596,tmax9697,tmax9798,tmax9899,tmax9900,tmax0001,tmax0102,tmax0203,tmax0304,tmax0405,tmax0506,tmax0607,tmax0708,tmax0809,
+               tmax0910,tmax1011)
+
+
+tminlist_mean = lapply(tminlist,function(x){x %>% select(-Date) })
+tmaxlist_mean = lapply(tmaxlist,function(x){x %>% select(-Date) })
+
+
+(tminlist_mean[[1]] + tmaxlist_mean[[1]])/2
+
+gdd_0708 = growseaon_mean0708 %>% 
+          dplyr::mutate_all(funs(ifelse(.>8 & .<32,1,0))) %>%
+          dplyr::summarise_all(funs(length(Date[.==1])))    
+
+
+
+
+gdd= dplyr::bind_rows(gdd_0708,gdd_0809,gdd_0910,gdd_1011)
+tgdd = t(gdd)
+colnames(tgdd) =c("gdd_0708","gdd_0809","gdd_0910","gdd_1011")
+tgdd = as.data.frame(tgdd) %>% tibble::rownames_to_column(var="WARDPCODE")
+tgdd$WARDPCODE = gsub(pattern = "X",replacement = "",tgdd$WARDPCODE)
+tgdd = tgdd %>% filter(WARDPCODE != "Date")
+
+map_data = dplyr::bind_cols(map_data,tgdd)
+
+```
+
+```{r,include=FALSE}
 rain0708sum = rain0708 %>% select(-Date) %>% colSums (na.rm = TRUE)
 rain0809sum = rain0809 %>% select(-Date) %>% colSums (na.rm = TRUE)
 rain0910sum = rain0910 %>% select(-Date) %>% colSums (na.rm = TRUE)
